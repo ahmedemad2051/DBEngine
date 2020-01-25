@@ -3,7 +3,9 @@
 red=`tput setaf 1`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
+blue=`tput setaf 4`
 reset=`tput sgr0`
+ORIGINAL=$LS_COLORS
 
 myDatabasePath=""
 
@@ -39,7 +41,7 @@ do
                 for database in ${databases[@]}
                 do
                     ((j=$j+1))
-                    echo "press $j for ${database/$DBs_path} " # remove path from db name
+                    echo "${blue}press $j for ${database/$DBs_path} ${reset}" # remove path from db name
 
                 done
                 echo "Please select a database:"
@@ -47,30 +49,51 @@ do
 
                 if [ ${userInput} -le ${j} -a  ${userInput} -gt 0 ]
                 then
+                    (( userInput=$userInput-1))
                     myDatabasePath="${databases[$userInput]}"
                     echo "You Are Using : ${myDatabasePath/$DBs_path}"
                     PS3="${myDatabasePath/$DBs_path}: "
                     while true
                     do
-                        select choice2 in 'insert' 'update' 'delete' 'select' 'display all' 'back to main'
+                        select choice2 in  'show tables' 'create table' 'delete table' 'insert' 'update' 'delete' 'select' 'display all' 'back to main'
                         do
                             case $REPLY in
-                            1) echo "insert"
+                            1)
+                                echo -e "\n"
+                                echo "******** All Tables **********"
+                                ls --color ${myDatabasePath}
+                                echo "******************************"
+                                echo -e "\n"
+                                break
+                            ;;
+                            2)
+                                while true
+                                do
+                                    echo "Enter new table name "
+                                    read tableName
+                                    source createTb.sh ${tableName}
+                                done
+                                break
+                            ;;
+                            3) echo "delete table"
                                break
                             ;;
-                            2) echo "update"
+                            4) echo "insert"
                                break
                             ;;
-                            3) echo "delete"
+                            5) echo "update"
                                break
                             ;;
-                            4) echo "select"
+                            6) echo "delete"
+                               break
+                            ;;
+                            7) echo "select"
                                break
                              ;;
-                            5) echo "display all"
+                            8) echo "display all"
                                break
                              ;;
-                            6)
+                            9)
                                 echo "back to main"
                                 PS3="#? "
                                 break 2

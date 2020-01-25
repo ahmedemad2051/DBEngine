@@ -21,8 +21,7 @@ then
             break 1
         fi
     else
-        echo "${red}Syntax not valid database name must start with letters or _${reset}"
-        continue 1
+        echo "${red}Syntax not valid. database name must start with letters or _${reset}"
 	fi
 else
   echo "${red}No database name given${reset}"
