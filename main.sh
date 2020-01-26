@@ -71,7 +71,13 @@ do
                                 do
                                     echo "Enter new table name "
                                     read tableName
-                                    source createTb.sh ${tableName}
+                                    source checkSyntax.sh ${tableName}
+                                    if [$? -eq 0]
+                                    then
+                                        source createTb.sh ${tableName}
+                                    else
+                                        echo You cannot start your table name with numbers or special characters but " _ ", and you cannot use special characters
+                                    fi
                                 done
                                 break
                             ;;
@@ -83,6 +89,7 @@ do
                                     if [$? -eq 1]
                                     then 
                                         rm -f ${myDatabasePath}/${tableName}
+                                        echo ${tableName} has been deleted succesfully
                                         break
                                     else
                                         echo this Table is Not Existed
@@ -133,7 +140,13 @@ do
             do
                 echo "Enter dataBase name "
                 read databaseName
-                source createDb.sh ${databaseName}
+                source checkSyntax.sh ${databaseName}
+                if [$? -eq 0]
+                then
+                    source createDb.sh ${databaseName}
+                else
+                    echo You cannot start your dataBase name with numbers or special characters but " _ ", and you cannot use special characters
+                fi
             done
             break
         ;;
