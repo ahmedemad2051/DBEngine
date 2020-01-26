@@ -9,7 +9,7 @@ ORIGINAL=$LS_COLORS
 
 myDatabasePath=""
 
-DBs_path="/home/onepiece/Downloads/dbEngine-master/DataBases"
+DBs_path="/home/$USER/Downloads/dbEngine-master/DataBases"
 # create dataBases directory if not exists
 mkdir -p ${DBs_path}
 
