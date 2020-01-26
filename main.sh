@@ -75,8 +75,26 @@ do
                                 done
                                 break
                             ;;
-                            3) echo "delete table"
-                               break
+                            3) while true
+                                do
+                                    echo "Enter table name "
+                                    read tableName
+                                    source checkTbExist.sh ${tableName}
+                                    if [$? -eq 1]
+                                    then 
+                                        rm -f ${myDatabasePath}/${tableName}
+                                        break
+                                    else
+                                        echo this Table is Not Existed
+                                    fi
+                                    echo to return to the previous menu press 1
+                                    read userInput
+                                    if [ $userInput -eq "1" ]
+                                    then
+                                        break
+                                    fi
+                                done
+                                break
                             ;;
                             4) echo "insert"
                                break
