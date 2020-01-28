@@ -1,42 +1,53 @@
 stringReg="^[a-zA-Z]+[a-zA-Z]*$"
-intReg="^[0-9]+[0-9]*$"
+intReg="^[0-9]+[0-9]*$|^(NULL)|^(null)"
 alphNumReg="^[a-zA-Z_]+[a-zA-Z]+[0-9a-zA-Z_]*$"
 let counter=2
 flag=false
 function checkPrimaryKeyRepeted {
-    while true
-    do
-        isFounded=$(awk -v i="$counter" -v colName="$colData" -F: 'BEGIN{isFounded=0} {if($i==colData){isFounded=1}} END{print isFounded}' ${myDatabasePath}/$1)
-        echo $isFounded
-        if [ $(($isFounded)) -eq 1 -a $(($2)) -eq 1 ]
+    if [ $(($2)) -eq 1 ]
+    then
+        if [ $3 = "NULL" -o $3 = "null" ]
         then
             return 1
         else
-            return 0
+            isFounded=$(awk -v i="$(($counter - 1))" -v colData="$3" -F: 'BEGIN{isFounded=0} {if($i==colData){isFounded=1}} END{print isFounded}' ${myDatabasePath}/$1)
+            if [ $(($isFounded)) -eq 1 -a $(($2)) -eq 1 ]
+            then
+                return 1
+            else
+                return 0
+            fi
         fi
-    done
+    fi
 }
 function insertIntoDataBase {
     while true
     do
-        let colNum=$(awk -v i="$counter" -F: 'END{print NR}' ${myDatabasePath}/".${1}.md");
+        let colNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/".${1}.md");
+        let dataColNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/$1);
+        echo $dataColNum
+        let colPrimary=$(awk -v i="$counter" -F: '{if(NR == i) print $3}' ${myDatabasePath}/".${1}.md");
+        if [ $(($colPrimary)) -eq 1 ]
+        then
+            let lastPrimaryKey=$(awk -v i="$(($counter-1))" -v ColNum="$(($dataColNum))" -F: '{if(NR == (ColNum - 1)) print $i}' ${myDatabasePath}/$1);
+            echo the last Primary Key was $lastPrimaryKey
+        fi
         if [ $colNum -eq $counter ]
         then
             flag=true
         fi
         colName=$(awk -v i="$counter" -F: '{if(NR == i) print $1}' ${myDatabasePath}/".${1}.md");
         colType=$(awk -v i="$counter" -F: '{if(NR == i) print $2}' ${myDatabasePath}/".${1}.md");
-        let colPrimary=$(awk -v i="$counter" -F: '{if(NR == i) print $3}' ${myDatabasePath}/".${1}.md");
         case $colType in
             Int)
                 while true
                 do
                     echo Please Enter $colName Data
                     read colData
-                    checkPrimaryKeyRepeted $1 $colPrimary
+                    checkPrimaryKeyRepeted $1 $colPrimary $colData
                     if [ $? -eq 1 ]
                     then
-                        echo "${red} Primary Key Cannot be Reppeted ${reset}"
+                        echo "${red} Primary Key Cannot be Reppeted or null ${reset}"
                     else
                         if [[ $colData =~ $intReg ]]
                         then
@@ -53,12 +64,12 @@ function insertIntoDataBase {
                 do
                     echo Please Enter $colName Data
                     read colData
-                    checkPrimaryKeyRepeted $1 $colPrimary
+                    checkPrimaryKeyRepeted $1 $colPrimary $colData
                     if [ $? -eq 1 ]
                     then
-                        echo "${red} Primary Key Cannot be Reppeted ${reset}"
+                        echo "${red} Primary Key Cannot be Reppeted or null ${reset}"
                     else
-                        if [[ $colData =~ $intReg ]]
+                        if [[ $colData =~ $stringReg ]]
                         then
                             break 1
                         else
@@ -73,12 +84,12 @@ function insertIntoDataBase {
                 do
                     echo Please Enter $colName Data
                     read colData
-                    checkPrimaryKeyRepeted $1 $colPrimary
+                    checkPrimaryKeyRepeted $1 $colPrimary $colData
                     if [ $? -eq 1 ]
                     then
-                        echo "${red} Primary Key Cannot be Reppeted ${reset}"
+                        echo "${red} Primary Key Cannot be Reppeted or null ${reset}"
                     else
-                        if [[ $colData =~ $intReg ]]
+                        if [[ $colData =~ $alphNumReg ]]
                         then
                             break 1
                         else
@@ -96,7 +107,6 @@ function insertIntoDataBase {
                 break
             }
         fi
-        echo $flag
         ((counter=$counter+1))
     done
 }
