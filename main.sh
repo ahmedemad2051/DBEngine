@@ -23,148 +23,161 @@ do
             databases[$i]=$folder # get all databases in an array
             ((i=$i+1))
         done
-
+        
         case $REPLY in
-        1)
-            echo -e "\n"
-            echo "******** DataBases **********"
-            ls --color ${DBs_path}
-            echo "*****************************"
-            echo -e "\n"
-
-            break
-        ;;
-        2)
-            while true
-            do
-                j=0
-                for database in ${databases[@]}
+            1)
+                echo -e "\n"
+                echo "******** DataBases **********"
+                ls --color ${DBs_path}
+                echo "*****************************"
+                echo -e "\n"
+                
+                break
+            ;;
+            2)
+                while true
                 do
-                    ((j=$j+1))
-                    echo "${blue}press $j for ${database/$DBs_path} ${reset}" # remove path from db name
-
-                done
-                echo "Please select a database:"
-                read userInput
-
-                if [ ${userInput} -le ${j} -a  ${userInput} -gt 0 ]
-                then
-                    (( userInput=$userInput-1))
-                    myDatabasePath="${databases[$userInput]}"
-                    echo "You Are Using : ${myDatabasePath/$DBs_path}"
-                    PS3="${myDatabasePath/$DBs_path}: "
-                    while true
+                    j=0
+                    for database in ${databases[@]}
                     do
-                        select choice2 in  'show tables' 'create table' 'delete table' 'insert' 'update' 'delete' 'select' 'display all' 'back to main'
-                        do
-                            case $REPLY in
-                            1)
-                                echo -e "\n"
-                                echo "******** All Tables **********"
-                                ls --color ${myDatabasePath}
-                                echo "******************************"
-                                echo -e "\n"
-                                break
-                            ;;
-                            2)
-                                while true
-                                do
-                                    echo "Enter new table name "
-                                    read tableName
-                                    source checkSyntax.sh ${tableName}
-                                    if [$? -eq 0]
-                                    then
-                                        source createTb.sh ${tableName}
-                                    else
-                                        echo You cannot start your table name with numbers or special characters but " _ ", and you cannot use special characters
-                                    fi
-                                done
-                                break
-                            ;;
-                            3) while true
-                                do
-                                    echo "Enter table name "
-                                    read tableName
-                                    source checkTbExist.sh ${tableName}
-                                    if [$? -eq 1]
-                                    then 
-                                        rm -f ${myDatabasePath}/${tableName}
-                                        echo ${tableName} has been deleted succesfully
-                                        break
-                                    else
-                                        echo this Table is Not Existed
-                                    fi
-                                    echo to return to the previous menu press 1
-                                    read userInput
-                                    if [ $userInput -eq "1" ]
-                                    then
-                                        break
-                                    fi
-                                done
-                                break
-                            ;;
-                            4) echo "insert"
-                               break
-                            ;;
-                            5) echo "update"
-                               break
-                            ;;
-                            6) echo "delete"
-                               break
-                            ;;
-                            7) echo "select"
-                               break
-                             ;;
-                            8) echo "display all"
-                               break
-                             ;;
-                            9)
-                                echo "back to main"
-                                PS3="#? "
-                                break 2
-                             ;;
-                            *) break ;;
-                            esac
-                        done
-                        continue 1
+                        ((j=$j+1))
+                        echo "${blue}press $j for ${database/$DBs_path} ${reset}" # remove path from db name
+                        
                     done
-                    break 2 # if user choosed valid db do not make him choose again
-                else
-                    echo "Invalid database please choose again"
-                    continue 1
-                fi
-            done
-        ;;
-        3)
-            while true
-            do
+                    echo "Please select a database:"
+                    read userInput
+                    
+                    if [ ${userInput} -le ${j} -a  ${userInput} -gt 0 ]
+                    then
+                        (( userInput=$userInput-1))
+                        myDatabasePath="${databases[$userInput]}"
+                        echo "You Are Using : ${myDatabasePath/$DBs_path}"
+                        PS3="${myDatabasePath/$DBs_path}: "
+                        while true
+                        do
+                            select choice2 in  'show tables' 'create table' 'delete table' 'insert' 'update' 'delete' 'select' 'display all' 'back to main'
+                            do
+                                case $REPLY in
+                                    1)
+                                        echo -e "\n"
+                                        echo "******** All Tables **********"
+                                        ls --color ${myDatabasePath}
+                                        echo "******************************"
+                                        echo -e "\n"
+                                        break
+                                    ;;
+                                    2)
+                                        while true
+                                        do
+                                            echo "Enter new table name "
+                                            read tableName
+                                            source checkSyntax.sh
+                                            if [ $? -eq 1 ]
+                                            then
+                                                source createTb.sh ${tableName}
+                                            else
+                                                echo "${red}Syntax not valid. column name must start with letters or _${reset}"
+                                            fi
+                                        done
+                                        break
+                                    ;;
+                                    3) while true
+                                        do
+                                            echo "Enter table name "
+                                            read tableName
+                                            source checkTbExist.sh ${tableName}
+                                            if [ $? -eq 1 ]
+                                            then
+                                                rm -f ${myDatabasePath}/${tableName}
+                                                echo ${tableName} has been deleted succesfully
+                                                break
+                                            else
+                                                echo this Table is Not Existed
+                                            fi
+                                            echo to return to the previous menu press 1
+                                            read userInput
+                                            if [ $userInput -eq "1" ]
+                                            then
+                                                break
+                                            fi
+                                        done
+                                        break
+                                    ;;
+                                    4) echo "insert"
+                                        while true
+                                        do
+                                            echo "Enter table name "
+                                            read tableName
+                                            source checkTbExist.sh ${tableName}
+                                            if [ $? -eq 1 ]
+                                            then
+                                                source insertIntoTable.sh ${tableName}
+                                                break
+                                            else
+                                                echo this Table is Not Existed
+                                            fi
+                                        done
+                                        break
+                                    ;;
+                                    5) echo "update"
+                                        break
+                                    ;;
+                                    6) echo "delete"
+                                        break
+                                    ;;
+                                    7) echo "select"
+                                        break
+                                    ;;
+                                    8) echo "display all"
+                                        break
+                                    ;;
+                                    9)
+                                        echo "back to main"
+                                        PS3="#? "
+                                        break 2
+                                    ;;
+                                    *) break ;;
+                                esac
+                            done
+                            continue 1
+                        done
+                        break 2 # if user choosed valid db do not make him choose again
+                    else
+                        echo "Invalid database please choose again"
+                        continue 1
+                    fi
+                done
+            ;;
+            3)
+                while true
+                do
+                    echo "Enter dataBase name "
+                    read databaseName
+                    source checkSyntax.sh ${databaseName}
+                    if [ $? -eq 1 ]
+                    then
+                        source createDb.sh ${databaseName}
+                    else
+	                     echo "${red}Syntax not valid. column name must start with letters or _${reset}"
+                    fi
+                done
+                break
+            ;;
+            4)
                 echo "Enter dataBase name "
                 read databaseName
-                source checkSyntax.sh ${databaseName}
-                if [$? -eq 0]
-                then
-                    source createDb.sh ${databaseName}
-                else
-                    echo You cannot start your dataBase name with numbers or special characters but " _ ", and you cannot use special characters
-                fi
-            done
-            break
-        ;;
-        4)
-            echo "Enter dataBase name "
-            read databaseName
-            source deleteDb.sh ${databaseName}
-            break
-        ;;
-        5)
-            echo "${yellow}Bye${reset}"
-            break 2
-        ;;
-        *)
-            break
-        ;;
+                source deleteDb.sh ${databaseName}
+                break
+            ;;
+            5)
+                echo "${yellow}Bye${reset}"
+                break 2
+            ;;
+            *)
+                break
+            ;;
         esac
-
+        
     done
     continue # reload menu
 done
