@@ -25,12 +25,12 @@ function insertIntoDataBase {
     do
         let colNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/".${1}.md");
         let dataColNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/$1);
-        echo $dataColNum
         let colPrimary=$(awk -v i="$counter" -F: '{if(NR == i) print $3}' ${myDatabasePath}/".${1}.md");
         if [ $(($colPrimary)) -eq 1 ]
         then
             let lastPrimaryKey=$(awk -v i="$(($counter-1))" -v ColNum="$(($dataColNum))" -F: '{if(NR == (ColNum - 1)) print $i}' ${myDatabasePath}/$1);
-            echo the last Primary Key was $lastPrimaryKey
+            echo 
+            echo "${blue}the last Primary Key was $lastPrimaryKey${reset}"
         fi
         if [ $colNum -eq $counter ]
         then
@@ -111,4 +111,3 @@ function insertIntoDataBase {
     done
 }
 insertIntoDataBase $1
-
