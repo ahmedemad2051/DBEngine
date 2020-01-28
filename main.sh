@@ -71,7 +71,7 @@ do
                                         do
                                             echo "Enter new table name "
                                             read tableName
-                                            source checkSyntax.sh
+                                            source checkSyntax.sh ${tableName}
                                             if [ $? -eq 1 ]
                                             then
                                                 source createTb.sh ${tableName}
