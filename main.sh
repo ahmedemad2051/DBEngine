@@ -4,6 +4,7 @@ red=`tput setaf 1`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 blue=`tput setaf 4`
+gray=`tput setaf 8`
 reset=`tput sgr0`
 ORIGINAL=$LS_COLORS
 
@@ -71,7 +72,8 @@ do
                                         do
                                             echo "Enter new table name "
                                             read tableName
-                                            source checkSyntax.sh $tableName
+
+                                            source checkSyntax.sh ${tableName}
                                             if [ $? -eq 1 ]
                                             then
                                                 source createTb.sh ${tableName}
