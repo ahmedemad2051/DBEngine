@@ -99,11 +99,15 @@ function insertIntoDataBase {
                 done
             ;;
         esac
+        if [ $(($dataColNum)) -eq 1 -o $(($counter)) -eq 2 ]
+        then
+            sed -i "$ s/$/\n/" ${myDatabasePath}/$1
+        fi
         if [ $flag == "false" ]
         then
             sed -i "$ s/$/${colData}:/" ${myDatabasePath}/$1
         else {
-                sed -i "$ s/$/${colData}\n/" ${myDatabasePath}/$1
+                sed -i "$ s/$/${colData}/" ${myDatabasePath}/$1
                 break
             }
         fi
