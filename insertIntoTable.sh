@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 stringReg="^[a-zA-Z]+[a-zA-Z]*$"
 intReg="^[0-9]+[0-9]*$"
 alphNumReg="^[a-zA-Z_]+[a-zA-Z]+[0-9a-zA-Z_]*$"
