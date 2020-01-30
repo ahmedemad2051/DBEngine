@@ -72,7 +72,7 @@ do
                                         do
                                             echo "Enter new table name "
                                             read tableName
-
+                                            
                                             source checkSyntax.sh ${tableName}
                                             if [ $? -eq 1 ]
                                             then
@@ -91,7 +91,7 @@ do
                                             if [ $? -eq 1 ]
                                             then
                                                 rm -f ${myDatabasePath}/${tableName}
-                                                echo ${tableName} has been deleted succesfully
+                                                echo "${green}${tableName} has been deleted succesfully${reset}"
                                                 break
                                             else
                                                 echo this Table is Not Existed
@@ -116,12 +116,25 @@ do
                                                 source insertIntoTable.sh ${tableName}
                                                 break
                                             else
-                                                echo this Table is Not Existed
+                                                echo "${red}this Table is Not Existed${reset}"
                                             fi
                                         done
                                         break
                                     ;;
                                     5) echo "update"
+                                        while true
+                                        do
+                                            echo "Enter table name "
+                                            read tableName
+                                            source checkTbExist.sh ${tableName}
+                                            if [ $? -eq 1 ]
+                                            then
+                                                source updateIntoTable.sh ${tableName}
+                                                break
+                                            else
+                                                echo "${red}this Table is Not Existed${reset}"
+                                            fi
+                                        done
                                         break
                                     ;;
                                     6) echo "delete"
@@ -160,7 +173,7 @@ do
                     then
                         source createDb.sh ${databaseName}
                     else
-	                     echo "${red}Syntax not valid. column name must start with letters or _${reset}"
+                        echo "${red}Syntax not valid. column name must start with letters or _${reset}"
                     fi
                 done
                 break

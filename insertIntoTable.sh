@@ -21,7 +21,7 @@ function checkPrimaryKeyRepeted {
         fi
     fi
 }
-function insertIntoDataBase {
+function insertIntoTable {
     while true
     do
         let rowNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/".${1}.md");
@@ -119,11 +119,11 @@ function insertIntoDataBase {
         then
             sed -i "$ s/$/${colData}:/" ${myDatabasePath}/$1
         else {
-                sed -i "$ s/$/${colData}:/" ${myDatabasePath}/$1
+                sed -i "$ s/$/${colData}/" ${myDatabasePath}/$1
                 break
             }
         fi
         ((counter=$counter+1))
     done
 }
-insertIntoDataBase $1
+insertIntoTable $1
