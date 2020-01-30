@@ -24,16 +24,31 @@ function checkPrimaryKeyRepeted {
 function insertIntoDataBase {
     while true
     do
-        let colNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/".${1}.md");
-        let dataColNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/$1);
+        let rowNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/".${1}.md");
+        dataRowNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/$1);
         let colPrimary=$(awk -v i="$counter" -F: '{if(NR == i) print $3}' ${myDatabasePath}/".${1}.md");
-        if [ $(($colPrimary)) -eq 1 ]
+        echo $dataRowNum
+        if [ $(($dataRowNum)) -eq 1 -o $(($counter)) -eq 2 ]
         then
-            let lastPrimaryKey=$(awk -v i="$(($counter-1))" -v ColNum="$(($dataColNum))" -F: '{if(NR == (ColNum - 1)) print $i}' ${myDatabasePath}/$1);
-            echo 
-            echo "${blue}the last Primary Key was $lastPrimaryKey${reset}"
+            sed -i "$ s/$/\n/" ${myDatabasePath}/$1
         fi
-        if [ $colNum -eq $counter ]
+        if [ $(($colPrimary)) -eq 1 -a $(($dataRowNum)) -gt 1 ]
+        then
+            if [ $(($counter)) -eq 2 ]
+            then
+                declare lastPrimaryKey=$(awk -v i="$(($counter - 1))" -v rowNum="$(($dataRowNum))" -F: 'BEGIN {lastprimary=0} {if(NR == rowNum)lastprimary=$i} END{print lastprimary}' ${myDatabasePath}/$1);
+                echo $lastPrimaryKey
+                echo "${blue}the last Primary Key was $lastPrimaryKey${reset}"
+            else
+                declare lastPrimaryKey=$(awk -v i="$(($counter - 1))" -v rowNum="$(($dataRowNum))" -F: 'BEGIN {lastprimary=0} {if(NR == rowNum - 1)lastprimary=$i} END{print lastprimary}' ${myDatabasePath}/$1);
+                echo $lastPrimaryKey
+                echo "${blue}the last Primary Key was $lastPrimaryKey${reset}"
+            fi
+        elif [ $(($colPrimary)) -eq 1 -a $(($dataRowNum)) -eq 1 ]
+        then
+            echo "${blue}Enter a your fitst primary key data${reset}"
+        fi
+        if [ $rowNum -eq $counter ]
         then
             flag=true
         fi
@@ -100,15 +115,11 @@ function insertIntoDataBase {
                 done
             ;;
         esac
-        if [ $(($dataColNum)) -eq 1 -o $(($counter)) -eq 2 ]
-        then
-            sed -i "$ s/$/\n/" ${myDatabasePath}/$1
-        fi
         if [ $flag == "false" ]
         then
             sed -i "$ s/$/${colData}:/" ${myDatabasePath}/$1
         else {
-                sed -i "$ s/$/${colData}/" ${myDatabasePath}/$1
+                sed -i "$ s/$/${colData}:/" ${myDatabasePath}/$1
                 break
             }
         fi
