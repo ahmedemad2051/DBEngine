@@ -138,6 +138,20 @@ do
                                         break
                                     ;;
                                     6) echo "delete"
+                                        while true
+                                        do
+                                            echo "Enter table name "
+                                            read tableName
+                                            source checkTbExist.sh ${tableName}
+                                            if [ $? -eq 1 ]
+                                            then
+                                                source deleteRowFromTable.sh ${tableName}
+                                                break
+                                            else
+                                                echo "${red}this Table is Not Existed${reset}"
+                                            fi
+                                        done
+                                        break
                                         break
                                     ;;
                                     7) echo "select"

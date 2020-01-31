@@ -1,7 +1,7 @@
 #!/usr/bin/bash
-stringReg="^[a-zA-Z]+[a-zA-Z]*$"
+stringReg="^[a-zA-Z ]+[a-zA-Z ]*$"
 intReg="^[0-9]+[0-9]*$|^(NULL)|^(null)"
-alphNumReg="^[a-zA-Z_]+[a-zA-Z]+[0-9a-zA-Z_]*$"
+alphNumReg="^[a-zA-Z_ ]+[a-zA-Z ]+[0-9a-zA-Z_ ]*$"
 
 function checkPrimaryKeyRepeted {
     if [ $(($2)) -eq 1 ]
