@@ -143,7 +143,26 @@ do
                                     7) echo "select"
                                         break
                                     ;;
-                                    8) echo "display all"
+                                    8)
+                                        while true
+                                        do
+                                            echo "Enter table name "
+                                            read tableName
+                                            source checkTbExist.sh ${tableName}
+                                            if [ $? -eq 1 ]
+                                            then
+                                                source displayAll.sh ${tableName}
+                                                break
+                                            else
+                                                echo "${red}this Table is Not Existed${reset}"
+                                            fi
+                                            echo to return to the previous menu press 1
+                                            read userInput
+                                            if [ $userInput -eq "1" ]
+                                            then
+                                                break
+                                            fi
+                                        done
                                         break
                                     ;;
                                     9)
