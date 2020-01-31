@@ -1,7 +1,7 @@
 #!/usr/bin/bash
-stringReg="^[a-zA-Z]+[a-zA-Z]*$"
+stringReg="^[a-zA-Z ]+[a-zA-Z ]*$"
 intReg="^[0-9]+[0-9]*$|^(NULL)|^(null)"
-alphNumReg="^[a-zA-Z_]+[a-zA-Z]+[0-9a-zA-Z_]*$"
+alphNumReg="^[a-zA-Z_ ]+[a-zA-Z ]+[0-9a-zA-Z_ ]*$"
 let counter=2
 flag=false
 function checkPrimaryKeyRepeted {
@@ -27,7 +27,6 @@ function insertIntoTable {
         let rowNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/".${1}.md");
         dataRowNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/$1);
         let colPrimary=$(awk -v i="$counter" -F: '{if(NR == i) print $3}' ${myDatabasePath}/".${1}.md");
-        echo $dataRowNum
         if [ $(($dataRowNum)) -eq 1 -o $(($counter)) -eq 2 ]
         then
             sed -i "$ s/$/\n/" ${myDatabasePath}/$1
