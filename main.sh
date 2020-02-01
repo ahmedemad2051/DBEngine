@@ -18,6 +18,7 @@ while true
 do
     select choice in 'press 1 to list databases' 'press 2 to choose a database' 'press 3 create a new database' 'press 4 to delete database' 'press 5 to Exit'
     do
+        
         i=0
         for folder in ${DBs_path}/*
         do
@@ -56,7 +57,7 @@ do
                         PS3="${myDatabasePath/$DBs_path}: "
                         while true
                         do
-                            select choice2 in  'show tables' 'create table' 'delete table' 'insert' 'update' 'delete' 'select' 'display all' 'back to main'
+                            select choice2 in  'show tables' 'create table' 'delete table' 'insert' 'update' 'delete' 'select Table' 'display all' 'back to main'
                             do
                                 case $REPLY in
                                     1)
@@ -85,6 +86,11 @@ do
                                     ;;
                                     3) while true
                                         do
+                                            echo -e "\n"
+                                            echo "******** All Tables **********"
+                                            ls --color ${myDatabasePath}
+                                            echo "******************************"
+                                            echo -e "\n"
                                             echo "Enter table name "
                                             read tableName
                                             source checkTbExist.sh ${tableName}
@@ -108,6 +114,11 @@ do
                                     4) echo "insert"
                                         while true
                                         do
+                                            echo -e "\n"
+                                            echo "******** All Tables **********"
+                                            ls --color ${myDatabasePath}
+                                            echo "******************************"
+                                            echo -e "\n"
                                             echo "Enter table name "
                                             read tableName
                                             source checkTbExist.sh ${tableName}
@@ -124,6 +135,11 @@ do
                                     5) echo "update"
                                         while true
                                         do
+                                            echo -e "\n"
+                                            echo "******** All Tables **********"
+                                            ls --color ${myDatabasePath}
+                                            echo "******************************"
+                                            echo -e "\n"
                                             echo "Enter table name "
                                             read tableName
                                             source checkTbExist.sh ${tableName}
@@ -140,6 +156,11 @@ do
                                     6) echo "delete"
                                         while true
                                         do
+                                            echo -e "\n"
+                                            echo "******** All Tables **********"
+                                            ls --color ${myDatabasePath}
+                                            echo "******************************"
+                                            echo -e "\n"
                                             echo "Enter table name "
                                             read tableName
                                             source checkTbExist.sh ${tableName}
@@ -160,6 +181,11 @@ do
                                     8)
                                         while true
                                         do
+                                            echo -e "\n"
+                                            echo "******** All Tables **********"
+                                            ls --color ${myDatabasePath}
+                                            echo "******************************"
+                                            echo -e "\n"
                                             echo "Enter table name "
                                             read tableName
                                             source checkTbExist.sh ${tableName}
