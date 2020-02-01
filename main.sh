@@ -57,7 +57,7 @@ do
                         PS3="${myDatabasePath/$DBs_path}: "
                         while true
                         do                 
-                            select choice2 in  'show tables' 'create table' 'delete table' 'insert' 'update' 'delete' 'select Table' 'display all' 'update table' 'back to main'
+                            select choice2 in  'show tables' 'create table' 'delete table' 'insert' 'update' 'delete' 'select Table' 'display all' 'add column to tabe' 'drop column from table' 'back to main'
                             do
                                 case $REPLY in
                                     1)
@@ -226,7 +226,28 @@ do
                                         done
                                         break
                                     ;;
-                                    10)
+                                    10) echo "delete column from table"
+                                        while true
+                                        do
+                                            echo -e "\n"
+                                            echo "******** All Tables **********"
+                                            ls --color ${myDatabasePath}
+                                            echo "******************************"
+                                            echo -e "\n"
+                                            echo "Enter table name "
+                                            read tableName
+                                            source checkTbExist.sh ${tableName}
+                                            if [ $? -eq 1 ]
+                                            then
+                                                source dropColumn.sh ${tableName}
+                                                break
+                                            else
+                                                echo "${red}this Table is Not Existed${reset}"
+                                            fi
+                                        done
+                                        break
+                                    ;;
+                                    11)
                                         echo "back to main"
                                         PS3="#? "
                                         break 2
