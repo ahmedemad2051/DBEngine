@@ -7,7 +7,7 @@ flag=false
 function checkPrimaryKeyRepeted {
     if [ $(($2)) -eq 1 ]
     then
-        if [ $3 = "NULL" -o $3 = "null" ]
+        if [ $3 = "NULL" -o $3 = "null"  -o $3 -eq "0" ]
         then
             return 1
         else
@@ -22,6 +22,7 @@ function checkPrimaryKeyRepeted {
     fi
 }
 function insertIntoTable {
+    source displayAll.sh ${1}
     while true
     do
         let rowNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/".${1}.md");
@@ -62,7 +63,7 @@ function insertIntoTable {
                     checkPrimaryKeyRepeted $1 $colPrimary $colData
                     if [ $? -eq 1 ]
                     then
-                        echo "${red} Primary Key Cannot be Reppeted or null ${reset}"
+                        echo "${red} Primary Key Cannot be Reppeted, null or 0 ${reset}"
                     else
                         if [[ $colData =~ $intReg ]]
                         then
@@ -117,13 +118,14 @@ function insertIntoTable {
         if [ $flag == "false" ]
         then
             sed -i "$ s/$/${colData}:/" ${myDatabasePath}/$1
+            source displayAll.sh ${1}
         else {
                 sed -i "$ s/$/${colData}/" ${myDatabasePath}/$1
+                source displayAll.sh ${1}
                 break
             }
         fi
         ((counter=$counter+1))
-        source displayAll.sh ${1}
     done
 }
 insertIntoTable $1

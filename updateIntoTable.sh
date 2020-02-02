@@ -6,7 +6,7 @@ alphNumReg="^[a-zA-Z_ ]+[a-zA-Z ]+[0-9a-zA-Z_ ]*$"
 function checkPrimaryKeyRepeted {
     if [ $(($2)) -eq 1 ]
     then
-        if [ $3 = "NULL" -o $3 = "null" ]
+        if [ $3 = "NULL" -o $3 = "null" -o $3 -eq "0" ]
         then
             return 1
         else
@@ -61,7 +61,7 @@ function updateIntoTable {
                             checkPrimaryKeyRepeted $1 $colPrimary $newValue $feildToBeEditedColumnNumber
                             if [ $? -eq 1 ]
                             then
-                                echo "${red} Primary Key Cannot be Reppeted or null ${reset}"
+                                echo "${red} Primary Key Cannot be Reppeted, null or 0 ${reset}"
                             else
                                 if [[ $newValue =~ $intReg ]]
                                 then
