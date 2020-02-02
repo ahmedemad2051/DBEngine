@@ -193,7 +193,7 @@ do
                                                 mv ${myDatabasePath}/"${tableName}.new" ${myDatabasePath}/$tableName;
                                                 while true
                                                 do
-                                                    select choice2 in  'insert into table' 'update table' 'drop row from table' 'display all' 'add column to table' 'drop column from table' 'print one row' "${blue}back to main${reset}"
+                                                    select choice2 in  'insert into table' 'update table' 'drop row from table' 'display all' 'add column to table' 'drop column from table' 'print a row' 'print a column' "${blue}back to main${reset}"
                                                     do
                                                         case $REPLY in
                                                             1) echo "insert"
@@ -224,7 +224,11 @@ do
                                                                 source showRecord.sh ${tableName}
                                                                 break
                                                             ;;
-                                                            8)
+                                                            8) echo "show record from table"
+                                                                source showFeild.sh ${tableName}
+                                                                break
+                                                            ;;
+                                                            9)
                                                                 echo "back to main"
                                                                 PS3="#? "
                                                                 break 3
