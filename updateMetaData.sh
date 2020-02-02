@@ -1,11 +1,21 @@
 #!/usr/bin/bash
 
+intReg="^[0-9]+[0-9]*$"
 
 function addTableColumns {
     while true
     do
-        echo "Enter number of columns"
-        read columnsNumber
+        while true
+        do
+            echo "Enter number of columns"
+            read columnsNumber
+            if [[ "$columnsNumber" =~ $intReg ]]
+            then
+                break
+            else
+                echo "${red}Invalid number${reset}"
+            fi
+        done
         if [ $((columnsNumber)) -gt 0  -a $((columnsNumber)) -le 100  ]
         then
             counter=0
