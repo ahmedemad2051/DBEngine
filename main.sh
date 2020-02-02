@@ -71,8 +71,8 @@ do
                     then
                         (( userInput=$userInput-1))
                         myDatabasePath="${databases[$userInput]}"
-                        echo "You Are Using : ${myDatabasePath/$DBs_path}"
-                        PS3="${myDatabasePath/$DBs_path}: "
+                        echo "${blue}You Are Using : ${myDatabasePath/$DBs_path}${reset}"
+                        PS3="${blue}${myDatabasePath/$DBs_path}: ${reset}"
                         while true
                         do
                             select choice2 in  'show tables' 'create table' 'delete table' 'select Table' "${blue}back to main${reset}"
@@ -186,8 +186,8 @@ do
                                                 (( tableUserInput=$tableUserInput-1))
                                                 arrayTableName="${tables[$tableUserInput]}"
                                                 tableName=$(echo "${tables[$tableUserInput]}" | rev | cut -d'/' -f 1 | rev)
-                                                echo "You Are Using : ${arrayTableName/$myDatabasePath}"
-                                                PS3="${arrayTableName/$myDatabasePath}: "
+                                                echo "${blue}You Are Using : ${arrayTableName/$DBs_path}${reset}"
+                                                PS3="${blue}${arrayTableName/$DBs_path}: ${reset}"
                                                 let rowNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/".${tableName}.md");
                                                 awk -v rowNumber="$(($rowNum))" -F: 'BEGIN{OFS = ":"}{if(NR!=1){for(i=0;i<rowNumber ;i++){if($i == ""){$i = "NULL"}}};print $0}' ${myDatabasePath}/$tableName >> ${myDatabasePath}/"${tableName}.new";
                                                 mv ${myDatabasePath}/"${tableName}.new" ${myDatabasePath}/$tableName;
@@ -224,7 +224,7 @@ do
                                                                 source showRecord.sh ${tableName}
                                                                 break
                                                             ;;
-                                                            8) echo "show record from table"
+                                                            8) echo "show feild from table"
                                                                 source showFeild.sh ${tableName}
                                                                 break
                                                             ;;
