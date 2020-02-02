@@ -16,7 +16,7 @@ mkdir -p ${DBs_path}
 
 while true
 do
-    select choice in 'press 1 to list databases' 'press 2 to choose a database' 'press 3 create a new database' 'press 4 to delete database' 'press 5 to Exit'
+    select choice in 'press 1 to list databases' 'press 2 to choose a database' 'press 3 create a new database' 'press 4 to delete database' "${blue}press 5 to Exit${reset}"
     do
         
         i=0
@@ -57,7 +57,7 @@ do
                         PS3="${myDatabasePath/$DBs_path}: "
                         while true
                         do
-                            select choice2 in  'show tables' 'create table' 'delete table' 'select Table' 'back to main'
+                            select choice2 in  'show tables' 'create table' 'delete table' 'select Table' "${blue}back to main${reset}"
                             do
                                 
                                 x=0
@@ -143,9 +143,12 @@ do
                                                 tableName=$(echo "${tables[$tableUserInput]}" | rev | cut -d'/' -f 1 | rev)
                                                 echo "You Are Using : ${arrayTableName/$myDatabasePath}"
                                                 PS3="${arrayTableName/$myDatabasePath}: "
+                                                let rowNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/".${tableName}.md");
+                                                awk -v rowNumber="$(($rowNum))" -F: 'BEGIN{OFS = ":"}{if(NR!=1){for(i=0;i<rowNumber ;i++){if($i == ""){$i = "NULL"}}};print $0}' ${myDatabasePath}/$tableName >> ${myDatabasePath}/"${tableName}.new";
+                                                mv ${myDatabasePath}/"${tableName}.new" ${myDatabasePath}/$tableName;
                                                 while true
                                                 do
-                                                    select choice2 in  'insert into table' 'update table' 'delete row in table' 'display all' 'add column to table' 'drop column from table' 'back to main'
+                                                    select choice2 in  'insert into table' 'update table' 'drop row from table' 'display all' 'add column to table' 'drop column from table' "${blue}back to main${reset}"
                                                     do
                                                         case $REPLY in
                                                             1) echo "insert"
@@ -182,7 +185,7 @@ do
                                                     done
                                                 done
                                             else
-                                                echo "Invalid table please choose again"
+                                                echo "${red}Invalid table please choose again${reset}"
                                                 continue 1
                                             fi
                                         done
@@ -200,7 +203,7 @@ do
                         done
                         break 2 # if user choosed valid db do not make him choose again
                     else
-                        echo "Invalid database please choose again"
+                        echo "${red}Invalid database please choose again${reset}"
                         continue 1
                     fi
                 done
