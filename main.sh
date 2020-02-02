@@ -133,9 +133,16 @@ do
                                             ls --color ${myDatabasePath}
                                             echo "******************************"
                                             echo -e "\n"
-                                            echo "Enter table name "
-                                            read tableName
-                                            source checkTbExist.sh ${tableName}
+                                            tablesArrayLength="${#tables[@]}"
+                                            if [ $tablesArrayLength -gt 0  ]
+                                            then
+                                                echo "Please select a table:"
+                                                read tableUserInput
+                                            else
+                                                echo "${red}there are no tables please create at least one table${reset}"
+                                                break 2
+                                            fi
+                                            source checkTbExist.sh ${tableUserInput}
                                             if [ $? -eq 1 ]
                                             then
                                                 b=0
@@ -144,10 +151,10 @@ do
                                                     ((b=$b+1))
                                                 done
                                                 ((b=$b-1))
-                                                unset databases[$b]
-                                                rm -f ${myDatabasePath}/${tableName}
-                                                rm -f ${myDatabasePath}/".${tableName}.md"
-                                                echo "${green}${tableName} has been deleted succesfully${reset}"
+                                                unset tables[$b]
+                                                rm -f ${myDatabasePath}/${tableUserInput}
+                                                rm -f ${myDatabasePath}/".${tableUserInput}.md"
+                                                echo "${green}${tableUserInput} has been deleted succesfully${reset}"
                                                 filesExistCheck=$(ls ${myDatabasePath}/)
                                                 break
                                             else
@@ -251,15 +258,15 @@ do
                 done
             ;;
             3)
+                echo -e "\n"
+                echo "******** DataBases **********"
+                ls --color ${DBs_path}
+                echo "*****************************"
+                echo -e "\n"
+                echo "Enter new dataBase name "
+                read databaseName
                 while true
                 do
-                    echo -e "\n"
-                    echo "******** DataBases **********"
-                    ls --color ${DBs_path}
-                    echo "*****************************"
-                    echo -e "\n"
-                    echo "Enter dataBase name "
-                    read databaseName
                     source checkSyntax.sh ${databaseName}
                     if [ $? -eq 1 ]
                     then
@@ -271,6 +278,20 @@ do
                 break
             ;;
             4)
+                echo -e "\n"
+                echo "******** DataBases **********"
+                ls --color ${DBs_path}
+                echo "*****************************"
+                echo -e "\n"
+                databasesArrayLength="${#databases[@]}"
+                if [ $databasesArrayLength -gt 0  ]
+                then
+                    echo "Enter dataBase name "
+                    read databaseName
+                else
+                    echo "${red}there are no databases please create at least one database${reset}"
+                    break
+                fi
                 a=0
                 for folder in ${databases[@]}
                 do
@@ -279,8 +300,6 @@ do
                 echo $a
                 ((a=$a-1))
                 unset databases[$a]
-                echo "Enter dataBase name "
-                read databaseName
                 source deleteDb.sh ${databaseName}
                 databaseExistCheck=$(ls ${DBs_path}/)
                 break
