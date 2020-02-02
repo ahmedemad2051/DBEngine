@@ -1,11 +1,20 @@
 #!/usr/bin/bash
-
+intReg="^[0-9]+[0-9]*$"
 
 function addTableColumns {
     while true
     do
-        echo "Enter number of columns"
-        read columnsNumber
+        while true
+        do
+            echo "Enter number of columns"
+            read columnsNumber
+            if [[ "$columnsNumber" =~ $intReg ]]
+            then
+                break
+            else
+                echo "${red}Invalid number${reset}"
+            fi
+        done
         if [ $((columnsNumber)) -gt 0  -a $((columnsNumber)) -le 100  ]
         then
             counter=0
@@ -15,10 +24,10 @@ function addTableColumns {
                 while true
                 do
                     ((counter=counter+1))
-#                    if [ $((columnsNumber)) -eq 1 ]
-#                    then
-#                        echo "Notice:first column in the table will be the primary key"
-#                    fi
+                    #                    if [ $((columnsNumber)) -eq 1 ]
+                    #                    then
+                    #                        echo "Notice:first column in the table will be the primary key"
+                    #                    fi
                     echo "Enter Column ${counter} name"
                     read columnName
                     source checkSyntax.sh ${columnName}
@@ -84,13 +93,13 @@ function addTableColumns {
                 sed -i "$ a $columnName:$columnType:$primaryKey" ${myDatabasePath}/".${1}.md"
                 ((columnsNumber=$columnsNumber-1))
             done
-#            check there is a primary key if not make the first column a primary
-             hasPrimary=$(awk -F: 'BEGIN{isFounded=0} {if($3==1){isFounded=1}} END{print isFounded}' ${myDatabasePath}/".${1}.md")
-              if [ $hasPrimary -eq 0 ]
-              then
+            #            check there is a primary key if not make the first column a primary
+            hasPrimary=$(awk -F: 'BEGIN{isFounded=0} {if($3==1){isFounded=1}} END{print isFounded}' ${myDatabasePath}/".${1}.md")
+            if [ $hasPrimary -eq 0 ]
+            then
                 awk -F: 'BEGIN{OFS=FS}{if(NR==2){$3=1};print}' ${myDatabasePath}/".${1}.md" > ${myDatabasePath}/".${1}.tmp.md" && mv ${myDatabasePath}/".${1}.tmp.md" ${myDatabasePath}/".${1}.md"
-              fi
-
+            fi
+            
             break # leave columns add function after finish
         else
             echo "${red} Sorry,valid number of columns between 1 and 100.${reset}"

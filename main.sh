@@ -18,11 +18,14 @@ while true
 do
     select choice in 'press 1 to list databases' 'press 2 to choose a database' 'press 3 create a new database' 'press 4 to delete database' "${blue}press 5 to Exit${reset}"
     do
-        
+        databaseExistCheck=$(ls ${DBs_path}/)
         i=0
         for folder in ${DBs_path}/*
         do
-            databases[$i]=$folder # get all databases in an array
+            if [[ ! -z $databaseExistCheck ]]
+            then
+                databases[$i]=$folder # get all databases in an array
+            fi
             ((i=$i+1))
         done
         
@@ -40,15 +43,20 @@ do
                 while true
                 do
                     j=0
+                    databasesArrayLength="${#databases[@]}"
                     for database in ${databases[@]}
                     do
                         ((j=$j+1))
                         echo "${blue}press $j for ${database/$DBs_path} ${reset}" # remove path from db name
-                        
                     done
-                    echo "Please select a database:"
-                    read userInput
-                    
+                    if [ $databasesArrayLength -gt 0  ]
+                    then
+                        echo "Please select a database:"
+                        read userInput
+                    else
+                        echo "${red}there are no databases please create at least one table${reset}"
+                        break 2
+                    fi
                     if [ ${userInput} -le ${j} -a  ${userInput} -gt 0 ]
                     then
                         (( userInput=$userInput-1))
@@ -59,11 +67,14 @@ do
                         do
                             select choice2 in  'show tables' 'create table' 'delete table' 'select Table' "${blue}back to main${reset}"
                             do
-                                
+                                filesExistCheck=$(ls ${myDatabasePath}/)
                                 x=0
                                 for file in ${myDatabasePath}/*
                                 do
-                                    tables[$x]=$file # get all tables in an array
+                                    if [[ ! -z $filesExistCheck ]]
+                                    then
+                                        tables[$x]=$file # get all tables in an array
+                                    fi
                                     ((x=$x+1))
                                 done
                                 
@@ -110,6 +121,8 @@ do
                                             then
                                                 rm -f ${myDatabasePath}/${tableName}
                                                 rm -f ${myDatabasePath}/".${tableName}.md"
+                                                tableTobeRemoved="${myDatabasePath}/${tableName}"
+                                                tables=( "${tables[@]/$tableTobeRemoved}" )
                                                 echo "${green}${tableName} has been deleted succesfully${reset}"
                                                 break
                                             else
@@ -127,15 +140,21 @@ do
                                     4) echo "select"
                                         while true
                                         do
+                                            tablesArrayLength="${#tables[@]}"
                                             k=0
                                             for table in ${tables[@]}
                                             do
                                                 ((k=$k+1))
                                                 echo "${blue}press $k for ${table/$myDatabasePath} ${reset}" # remove path from db name
                                             done
-                                            echo "Please select a table:"
-                                            read tableUserInput
-                                            
+                                            if [ $tablesArrayLength -gt 0  ]
+                                            then
+                                                echo "Please select a table:"
+                                                read tableUserInput
+                                            else
+                                                echo "${red}there are no tables please create at least one table${reset}"
+                                                break 2
+                                            fi
                                             if [ ${tableUserInput} -le ${k} -a  ${tableUserInput} -gt 0 ]
                                             then
                                                 (( tableUserInput=$tableUserInput-1))
@@ -148,7 +167,7 @@ do
                                                 mv ${myDatabasePath}/"${tableName}.new" ${myDatabasePath}/$tableName;
                                                 while true
                                                 do
-                                                    select choice2 in  'insert into table' 'update table' 'drop row from table' 'display all' 'add column to table' 'drop column from table' "${blue}back to main${reset}"
+                                                    select choice2 in  'insert into table' 'update table' 'drop row from table' 'display all' 'add column to table' 'drop column from table' 'print one row' "${blue}back to main${reset}"
                                                     do
                                                         case $REPLY in
                                                             1) echo "insert"
@@ -175,7 +194,11 @@ do
                                                                 source dropColumn.sh ${tableName}
                                                                 break
                                                             ;;
-                                                            7)
+                                                            7) echo "show record from table"
+                                                                source showRecord.sh ${tableName}
+                                                                break
+                                                            ;;
+                                                            8)
                                                                 echo "back to main"
                                                                 PS3="#? "
                                                                 break 3
@@ -185,7 +208,7 @@ do
                                                     done
                                                 done
                                             else
-                                                echo "${red}Invalid table please choose again${reset}"
+                                                echo "${red}Invalid table or there are no tables please choose again${reset}"
                                                 continue 1
                                             fi
                                         done
@@ -203,7 +226,7 @@ do
                         done
                         break 2 # if user choosed valid db do not make him choose again
                     else
-                        echo "${red}Invalid database please choose again${reset}"
+                        echo "${red}Invalid database or there are no databases please choose again${reset}"
                         continue 1
                     fi
                 done
@@ -226,6 +249,8 @@ do
             4)
                 echo "Enter dataBase name "
                 read databaseName
+                dataBaseToBeRemoved="$DBs_path/$databaseName"
+                databases=( "${databases[@]/$dataBaseToBeRemoved}" )
                 source deleteDb.sh ${databaseName}
                 break
             ;;
