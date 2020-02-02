@@ -138,8 +138,6 @@ do
                                             source checkTbExist.sh ${tableName}
                                             if [ $? -eq 1 ]
                                             then
-                                                # tableTobeRemoved=(${myDatabasePath}/${tableName})
-                                                # tables=( "${tables[@]/$tableTobeRemoved}" )
                                                 b=0
                                                 for file in ${tables[@]}
                                                 do
