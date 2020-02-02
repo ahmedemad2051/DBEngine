@@ -19,6 +19,15 @@ do
     select choice in 'press 1 to list databases' 'press 2 to choose a database' 'press 3 create a new database' 'press 4 to delete database' "${blue}press 5 to Exit${reset}"
     do
         databaseExistCheck=$(ls ${DBs_path}/)
+        l=0
+        if [[  -z $databaseExistCheck ]]
+        then
+            for folder in ${DBs_path}/*
+            do
+                unset databases[$l]
+                ((l=$l+1))
+            done
+        fi
         i=0
         for folder in ${DBs_path}/*
         do
@@ -28,6 +37,7 @@ do
             fi
             ((i=$i+1))
         done
+        
         
         case $REPLY in
             1)
@@ -68,6 +78,15 @@ do
                             select choice2 in  'show tables' 'create table' 'delete table' 'select Table' "${blue}back to main${reset}"
                             do
                                 filesExistCheck=$(ls ${myDatabasePath}/)
+                                c=0
+                                if [[  -z $filesExistCheck ]]
+                                then
+                                    for file in ${myDatabasePath}/*
+                                    do
+                                        unset databases[$c]
+                                        ((c=$c+1))
+                                    done
+                                fi
                                 x=0
                                 for file in ${myDatabasePath}/*
                                 do
@@ -119,20 +138,22 @@ do
                                             source checkTbExist.sh ${tableName}
                                             if [ $? -eq 1 ]
                                             then
+                                                # tableTobeRemoved=(${myDatabasePath}/${tableName})
+                                                # tables=( "${tables[@]/$tableTobeRemoved}" )
+                                                b=0
+                                                for file in ${tables[@]}
+                                                do
+                                                    ((b=$b+1))
+                                                done
+                                                ((b=$b-1))
+                                                unset databases[$b]
                                                 rm -f ${myDatabasePath}/${tableName}
                                                 rm -f ${myDatabasePath}/".${tableName}.md"
-                                                tableTobeRemoved="${myDatabasePath}/${tableName}"
-                                                tables=( "${tables[@]/$tableTobeRemoved}" )
                                                 echo "${green}${tableName} has been deleted succesfully${reset}"
+                                                filesExistCheck=$(ls ${myDatabasePath}/)
                                                 break
                                             else
-                                                echo this Table is Not Existed
-                                            fi
-                                            echo to return to the previous menu press 1
-                                            read userInput
-                                            if [ $userInput -eq "1" ]
-                                            then
-                                                break
+                                                echo "${red}this Table is Not Existed${reset}"
                                             fi
                                         done
                                         break
@@ -234,6 +255,11 @@ do
             3)
                 while true
                 do
+                    echo -e "\n"
+                    echo "******** DataBases **********"
+                    ls --color ${DBs_path}
+                    echo "*****************************"
+                    echo -e "\n"
                     echo "Enter dataBase name "
                     read databaseName
                     source checkSyntax.sh ${databaseName}
@@ -247,11 +273,18 @@ do
                 break
             ;;
             4)
+                a=0
+                for folder in ${databases[@]}
+                do
+                    ((a=$a+1))
+                done
+                echo $a
+                ((a=$a-1))
+                unset databases[$a]
                 echo "Enter dataBase name "
                 read databaseName
-                dataBaseToBeRemoved="$DBs_path/$databaseName"
-                databases=( "${databases[@]/$dataBaseToBeRemoved}" )
                 source deleteDb.sh ${databaseName}
+                databaseExistCheck=$(ls ${DBs_path}/)
                 break
             ;;
             5)
