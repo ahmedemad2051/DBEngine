@@ -123,6 +123,7 @@ function insertIntoTable {
             }
         fi
         ((counter=$counter+1))
+        source displayAll.sh ${1}
     done
 }
 insertIntoTable $1

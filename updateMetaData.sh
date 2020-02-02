@@ -99,6 +99,7 @@ function addTableColumns {
     let rowNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/".${1}.md");
     awk -v rowNumber="$(($rowNum))" -F: 'BEGIN{OFS = ":"}{if(NR!=1){for(i=0;i<rowNumber ;i++){if($i == ""){$i = "NULL"}}};print $0}' ${myDatabasePath}/$1 >> ${myDatabasePath}/"${1}.new";
     mv ${myDatabasePath}/"${1}.new" ${myDatabasePath}/$1;
+    source displayAll.sh ${1}
 }
 
 if [ $# -gt 0 ]
@@ -112,6 +113,7 @@ then
         echo "~~metaData of table $1~~" > ${myDatabasePath}/".${1}.md"
         echo "${green}Table created successfully${reset}"
     fi
+    source displayAll.sh ${1}
     addTableColumns $1
     break 1
 fi

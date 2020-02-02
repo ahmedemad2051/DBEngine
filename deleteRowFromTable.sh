@@ -3,6 +3,7 @@
 function deleteRowFromTable {
     while true
     do
+        source displayAll.sh ${1}
         echo "${yellow}do you want proceed y or n ${reset}"
         read userInput
         if [ $userInput = "y" ]
@@ -18,6 +19,7 @@ function deleteRowFromTable {
                 feildToBeEditedColumnNumber=$(awk -v field="$feildName" -F: '{if($1 == field) print NR}' ${myDatabasePath}/".${1}.md");
                 feildToBeEditedColumnNumber=$(($feildToBeEditedColumnNumber - 1))
                 sed -i "/$primaryKey/d" ${myDatabasePath}/$1;
+            source displayAll.sh ${1}
             else
                 echo "${red}this primary key doesn't exist${reset}"
             fi

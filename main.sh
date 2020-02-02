@@ -79,9 +79,13 @@ do
                                     2)
                                         while true
                                         do
+                                            echo -e "\n"
+                                            echo "******** All Tables **********"
+                                            ls --color ${myDatabasePath}
+                                            echo "******************************"
+                                            echo -e "\n"
                                             echo "Enter new table name "
                                             read tableName
-                                            
                                             source checkSyntax.sh ${tableName}
                                             if [ $? -eq 1 ]
                                             then
@@ -105,6 +109,7 @@ do
                                             if [ $? -eq 1 ]
                                             then
                                                 rm -f ${myDatabasePath}/${tableName}
+                                                rm -f ${myDatabasePath}/".${tableName}.md"
                                                 echo "${green}${tableName} has been deleted succesfully${reset}"
                                                 break
                                             else

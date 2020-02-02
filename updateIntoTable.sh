@@ -23,6 +23,7 @@ function checkPrimaryKeyRepeted {
 function updateIntoTable {
     while true
     do
+        source displayAll.sh ${1}
         echo "${yellow}do you want proceed y or n ${reset}"
         read userInput
         if [ $userInput = "y" ]
@@ -114,6 +115,7 @@ function updateIntoTable {
                 esac
                 awk -v rowNumber="$rowNumToBeEdited" -v colNumber="$feildToBeEditedColumnNumber" -v newData="$newValue" -F: 'BEGIN{OFS = ":"}{if(NR == rowNumber){$colNumber = newData};print $0;}' ${myDatabasePath}/$1 >> ${myDatabasePath}/"${1}.new";
                 mv ${myDatabasePath}/"${1}.new" ${myDatabasePath}/$1;
+                source displayAll.sh ${1}
             else
                 echo "${red}this primary key doesn't exist${reset}"
             fi

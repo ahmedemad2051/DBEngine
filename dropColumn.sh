@@ -3,6 +3,7 @@
 function deleteColFromTable {
     while true
     do
+        source displayAll.sh ${1}
         echo "${yellow}do you want proceed y or n ${reset}"
         read userInput
         if [ $userInput = "y" ]
@@ -26,6 +27,7 @@ function deleteColFromTable {
                 awk  -F: -v j=$(($feildToBeEditedColumnNumber - 1)) '{s="";for(i=1;i<=NF;i++){f=(NF==i)?"":FS;if(i!=j)s=s $i f;}print s}' ${myDatabasePath}/$1 >> ${myDatabasePath}/"${1}.new"; #delete the column from data table
                 mv ${myDatabasePath}/"${1}.new" ${myDatabasePath}/$1;
                 sed -i "/$feildName/d" ${myDatabasePath}/".${1}.md"; #delete the column from metadata
+                source displayAll.sh ${1}
             else
                 echo "${red}you cannot delete the primary key${reset}"
             fi
