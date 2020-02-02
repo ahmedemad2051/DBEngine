@@ -23,9 +23,9 @@ function deleteColFromTable {
             isFounded=$(awk -v rowNum="$feildToBeEditedColumnNumber"  -F: 'BEGIN{isFounded=0} {if(NR == rowNum && $3 == 1){isFounded=1}} END{print isFounded}' ${myDatabasePath}/".${1}.md")
             if [ $(($isFounded)) -eq 0 ]
             then
-                awk  -F: -v j=$(($feildToBeEditedColumnNumber - 1)) '{s="";for(i=1;i<=NF;i++){f=(NF==i)?"":FS;if(i!=j)s=s $i f;}print s}' ${myDatabasePath}/$1 >> ${myDatabasePath}/"${1}.new";
+                awk  -F: -v j=$(($feildToBeEditedColumnNumber - 1)) '{s="";for(i=1;i<=NF;i++){f=(NF==i)?"":FS;if(i!=j)s=s $i f;}print s}' ${myDatabasePath}/$1 >> ${myDatabasePath}/"${1}.new"; #delete the column from data table
                 mv ${myDatabasePath}/"${1}.new" ${myDatabasePath}/$1;
-                sed -i "/$feildName/d" ${myDatabasePath}/".${1}.md";
+                sed -i "/$feildName/d" ${myDatabasePath}/".${1}.md"; #delete the column from metadata
             else
                 echo "${red}you cannot delete the primary key${reset}"
             fi

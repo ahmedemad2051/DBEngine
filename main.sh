@@ -56,9 +56,17 @@ do
                         echo "You Are Using : ${myDatabasePath/$DBs_path}"
                         PS3="${myDatabasePath/$DBs_path}: "
                         while true
-                        do                 
-                            select choice2 in  'show tables' 'create table' 'delete table' 'insert' 'update' 'delete' 'select Table' 'display all' 'add column to tabe' 'drop column from table' 'back to main'
+                        do
+                            select choice2 in  'show tables' 'create table' 'delete table' 'select Table' 'back to main'
                             do
+                                
+                                x=0
+                                for file in ${myDatabasePath}/*
+                                do
+                                    tables[$x]=$file # get all tables in an array
+                                    ((x=$x+1))
+                                done
+                                
                                 case $REPLY in
                                     1)
                                         echo -e "\n"
@@ -111,143 +119,71 @@ do
                                         done
                                         break
                                     ;;
-                                    4) echo "insert"
+                                    4) echo "select"
                                         while true
                                         do
-                                            echo -e "\n"
-                                            echo "******** All Tables **********"
-                                            ls --color ${myDatabasePath}
-                                            echo "******************************"
-                                            echo -e "\n"
-                                            echo "Enter table name "
-                                            read tableName
-                                            source checkTbExist.sh ${tableName}
-                                            if [ $? -eq 1 ]
+                                            k=0
+                                            for table in ${tables[@]}
+                                            do
+                                                ((k=$k+1))
+                                                echo "${blue}press $k for ${table/$myDatabasePath} ${reset}" # remove path from db name
+                                            done
+                                            echo "Please select a table:"
+                                            read tableUserInput
+                                            
+                                            if [ ${tableUserInput} -le ${k} -a  ${tableUserInput} -gt 0 ]
                                             then
-                                                source insertIntoTable.sh ${tableName}
-                                                break
+                                                (( tableUserInput=$tableUserInput-1))
+                                                arrayTableName="${tables[$tableUserInput]}"
+                                                tableName=$(echo "${tables[$tableUserInput]}" | rev | cut -d'/' -f 1 | rev)
+                                                echo "You Are Using : ${arrayTableName/$myDatabasePath}"
+                                                PS3="${arrayTableName/$myDatabasePath}: "
+                                                while true
+                                                do
+                                                    select choice2 in  'insert into table' 'update table' 'delete row in table' 'display all' 'add column to table' 'drop column from table' 'back to main'
+                                                    do
+                                                        case $REPLY in
+                                                            1) echo "insert"
+                                                                source insertIntoTable.sh ${tableName}
+                                                                break
+                                                            ;;
+                                                            2) echo "update"
+                                                                source updateIntoTable.sh ${tableName}
+                                                                break
+                                                            ;;
+                                                            3) echo "delete"
+                                                                source deleteRowFromTable.sh ${tableName}
+                                                                break
+                                                            ;;
+                                                            4)
+                                                                source displayAll.sh ${tableName}
+                                                                break
+                                                            ;;
+                                                            5) echo "update Data Of The Table"
+                                                                source updateMetaData.sh ${tableName}
+                                                                break
+                                                            ;;
+                                                            6) echo "delete column from table"
+                                                                source dropColumn.sh ${tableName}
+                                                                break
+                                                            ;;
+                                                            7)
+                                                                echo "back to main"
+                                                                PS3="#? "
+                                                                break 3
+                                                            ;;
+                                                            *) break ;;
+                                                        esac
+                                                    done
+                                                done
                                             else
-                                                echo "${red}this Table is Not Existed${reset}"
+                                                echo "Invalid table please choose again"
+                                                continue 1
                                             fi
                                         done
                                         break
                                     ;;
-                                    5) echo "update"
-                                        while true
-                                        do
-                                            echo -e "\n"
-                                            echo "******** All Tables **********"
-                                            ls --color ${myDatabasePath}
-                                            echo "******************************"
-                                            echo -e "\n"
-                                            echo "Enter table name "
-                                            read tableName
-                                            source checkTbExist.sh ${tableName}
-                                            if [ $? -eq 1 ]
-                                            then
-                                                source updateIntoTable.sh ${tableName}
-                                                break
-                                            else
-                                                echo "${red}this Table is Not Existed${reset}"
-                                            fi
-                                        done
-                                        break
-                                    ;;
-                                    6) echo "delete"
-                                        while true
-                                        do
-                                            echo -e "\n"
-                                            echo "******** All Tables **********"
-                                            ls --color ${myDatabasePath}
-                                            echo "******************************"
-                                            echo -e "\n"
-                                            echo "Enter table name "
-                                            read tableName
-                                            source checkTbExist.sh ${tableName}
-                                            if [ $? -eq 1 ]
-                                            then
-                                                source deleteRowFromTable.sh ${tableName}
-                                                break
-                                            else
-                                                echo "${red}this Table is Not Existed${reset}"
-                                            fi
-                                        done
-                                        break
-                                        break
-                                    ;;
-                                    7) echo "select"
-                                        break
-                                    ;;
-                                    8)
-                                        while true
-                                        do
-                                            echo -e "\n"
-                                            echo "******** All Tables **********"
-                                            ls --color ${myDatabasePath}
-                                            echo "******************************"
-                                            echo -e "\n"
-                                            echo "Enter table name "
-                                            read tableName
-                                            source checkTbExist.sh ${tableName}
-                                            if [ $? -eq 1 ]
-                                            then
-                                                source displayAll.sh ${tableName}
-                                                break
-                                            else
-                                                echo "${red}this Table is Not Existed${reset}"
-                                            fi
-                                            echo to return to the previous menu press 1
-                                            read userInput
-                                            if [ $userInput -eq "1" ]
-                                            then
-                                                break
-                                            fi
-                                        done
-                                        break
-                                    ;;
-                                    9) echo "update Data Of The Table"
-                                        while true
-                                        do
-                                            echo -e "\n"
-                                            echo "******** All Tables **********"
-                                            ls --color ${myDatabasePath}
-                                            echo "******************************"
-                                            echo -e "\n"
-                                            echo "Enter table name "
-                                            read tableName
-                                            source checkTbExist.sh ${tableName}
-                                            if [ $? -eq 1 ]
-                                            then
-                                                source updateMetaData.sh ${tableName}
-                                                break
-                                            else
-                                                echo "${red}this Table is Not Existed${reset}"
-                                            fi
-                                        done
-                                        break
-                                    ;;
-                                    10) echo "delete column from table"
-                                        while true
-                                        do
-                                            echo -e "\n"
-                                            echo "******** All Tables **********"
-                                            ls --color ${myDatabasePath}
-                                            echo "******************************"
-                                            echo -e "\n"
-                                            echo "Enter table name "
-                                            read tableName
-                                            source checkTbExist.sh ${tableName}
-                                            if [ $? -eq 1 ]
-                                            then
-                                                source dropColumn.sh ${tableName}
-                                                break
-                                            else
-                                                echo "${red}this Table is Not Existed${reset}"
-                                            fi
-                                        done
-                                        break
-                                    ;;
-                                    11)
+                                    5)
                                         echo "back to main"
                                         PS3="#? "
                                         break 2
