@@ -189,8 +189,11 @@ do
                                                 echo "${blue}You Are Using : ${arrayTableName/$DBs_path}${reset}"
                                                 PS3="${blue}${arrayTableName/$DBs_path}: ${reset}"
                                                 let rowNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/".${tableName}.md");
-                                                awk -v rowNumber="$(($rowNum))" -F: 'BEGIN{OFS = ":"}{if(NR!=1){for(i=0;i<rowNumber ;i++){if($i == ""){sed -i '$d' ${myDatabasePath}/$tableName}}};print $0}' ${myDatabasePath}/$tableName >> ${myDatabasePath}/"${tableName}.new";
-                                                mv ${myDatabasePath}/"${tableName}.new" ${myDatabasePath}/$tableName;
+                                                isFounded=$(awk -v rowNumber="$(($rowNum))" -F: 'BEGIN{OFS = ":";isFounded=0}{if(NR!=1){for(i=0;i<rowNumber ;i++){if($i == ""){isFounded=1}}}} END{print isFounded}' ${myDatabasePath}/$tableName)
+                                                if [ $(($isFounded)) -eq 1 ]
+                                                then
+                                                    sed -i '$d' ${myDatabasePath}/${tableName}
+                                                fi
                                                 while true
                                                 do
                                                     select choice2 in  'insert into table' 'update table' 'drop row from table' 'display all' 'add column to table' 'drop column from table' 'print a row' 'print a column' "${blue}back to main${reset}"
