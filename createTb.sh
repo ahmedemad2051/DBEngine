@@ -1,5 +1,6 @@
 #!/usr/bin/bash
 intReg="^[0-9]+[0-9]*$"
+NAME_PATTERN="^[a-zA-Z_]+[a-zA-Z]+[0-9a-zA-Z_]*$"
 
 function addTableColumns {
     while true
@@ -20,19 +21,17 @@ function addTableColumns {
             counter=0
             while (($columnsNumber>0))
             do
+                ((counter=counter+1))
                 # column name
                 while true
                 do
-                    ((counter=counter+1))
                     #                    if [ $((columnsNumber)) -eq 1 ]
                     #                    then
                     #                        echo "Notice:first column in the table will be the primary key"
                     #                    fi
                     echo "Enter Column ${counter} name"
                     read columnName
-                    source checkSyntax.sh ${columnName}
-                    colValid=$?
-                    if [ $colValid -eq 1 ]
+                    if [[ "$columnName" =~  $NAME_PATTERN ]]
                     then
                         # check column existed before
                         isFounded=$(awk -v colName="$columnName" -F: 'BEGIN{isFounded=0} {if($1==colName){isFounded=1}} END{print isFounded}' ${myDatabasePath}/".${1}.md")

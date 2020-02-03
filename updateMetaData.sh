@@ -21,10 +21,10 @@ function addTableColumns {
             counter=0
             while (($columnsNumber>0))
             do
+                ((counter=counter+1))
                 # column name
                 while true
                 do
-                    ((counter=counter+1))
                     #                    if [ $((columnsNumber)) -eq 1 ]
                     #                    then
                     #                        echo "Notice:first column in the table will be the primary key"

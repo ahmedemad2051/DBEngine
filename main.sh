@@ -121,7 +121,7 @@ do
                                             then
                                                 source createTb.sh ${tableName}
                                             else
-                                                echo "${red}Syntax not valid. column name must start with letters or _${reset}"
+                                                echo "${red}Syntax not valid. table name must start with letters or _${reset}"
                                             fi
                                         done
                                         break
@@ -200,35 +200,65 @@ do
                                                     do
                                                         case $REPLY in
                                                             1) echo "insert"
-                                                                source insertIntoTable.sh ${tableName}
+                                                                if [ $(($rowNum)) -eq 2 ]
+                                                                then
+                                                                    source insertIntoTable.sh ${tableName}
+                                                                else
+                                                                    echo "${red}This table is empty please add columns first${reset}"
+                                                                fi
                                                                 break
                                                             ;;
                                                             2) echo "update"
-                                                                source updateIntoTable.sh ${tableName}
+                                                                if [ $(($rowNum)) -eq 2 ]
+                                                                then
+                                                                    source updateIntoTable.sh ${tableName}
+                                                                else
+                                                                    echo "${red}This table is empty please add columns first${reset}"
+                                                                fi
                                                                 break
                                                             ;;
                                                             3) echo "delete"
-                                                                source deleteRowFromTable.sh ${tableName}
+                                                                if [ $(($rowNum)) -eq 2 ]
+                                                                then
+                                                                    source deleteRowFromTable.sh ${tableName}
+                                                                else
+                                                                    echo "${red}This table is empty please add columns first${reset}"
+                                                                fi
                                                                 break
                                                             ;;
                                                             4)
                                                                 source displayAll.sh ${tableName}
                                                                 break
                                                             ;;
-                                                            5) echo "update Data Of The Table"
+                                                            5) echo "add columns"
                                                                 source updateMetaData.sh ${tableName}
                                                                 break
                                                             ;;
                                                             6) echo "delete column from table"
-                                                                source dropColumn.sh ${tableName}
+                                                                if [ $(($rowNum)) -eq 2 ]
+                                                                then
+                                                                    source dropColumn.sh ${tableName}
+                                                                else
+                                                                    echo "${red}This table is empty please add columns first${reset}"
+                                                                fi
                                                                 break
                                                             ;;
                                                             7) echo "show record from table"
-                                                                source showRecord.sh ${tableName}
+                                                                if [ $(($rowNum)) -eq 2 ]
+                                                                then
+                                                                    source showRecord.sh ${tableName}
+                                                                else
+                                                                    echo "${red}This table is empty please add columns first${reset}"
+                                                                fi
                                                                 break
                                                             ;;
                                                             8) echo "show feild from table"
-                                                                source showFeild.sh ${tableName}
+                                                                if [ $(($rowNum)) -eq 2 ]
+                                                                then
+                                                                    source showFeild.sh ${tableName}
+                                                                else
+                                                                    echo "${red}This table is empty please add columns first${reset}"
+                                                                fi
                                                                 break
                                                             ;;
                                                             9)

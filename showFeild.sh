@@ -10,7 +10,7 @@ function displayColFromTable {
         then
             while true
             do
-                echo "${blue}please enter the name of feild you want to drop ${reset}"
+                echo "${blue}please enter the name of feild you want to print ${reset}"
                 read feildName
                 isFounded=$(awk -v Data="$feildName" -F: 'BEGIN{isFounded=0} {if($1==Data){isFounded=1}} END{print isFounded}' ${myDatabasePath}/".${1}.md")
                 if [ $(($isFounded)) -eq 1 ]
