@@ -64,7 +64,7 @@ do
                         echo "Please select a database:"
                         read userInput
                     else
-                        echo "${red}there are no databases please create at least one table${reset}"
+                        echo "${red}there are no databases please create at least one database${reset}"
                         break 2
                     fi
                     if [ ${userInput} -le ${j} -a  ${userInput} -gt 0 ]
