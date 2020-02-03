@@ -189,7 +189,7 @@ do
                                                 echo "${blue}You Are Using : ${arrayTableName/$DBs_path}${reset}"
                                                 PS3="${blue}${arrayTableName/$DBs_path}: ${reset}"
                                                 let rowNum=$(awk -F: 'END{print NR}' ${myDatabasePath}/".${tableName}.md");
-                                                awk -v rowNumber="$(($rowNum))" -F: 'BEGIN{OFS = ":"}{if(NR!=1){for(i=0;i<rowNumber ;i++){if($i == ""){$i = "NULL"}}};print $0}' ${myDatabasePath}/$tableName >> ${myDatabasePath}/"${tableName}.new";
+                                                awk -v rowNumber="$(($rowNum))" -F: 'BEGIN{OFS = ":"}{if(NR!=1){for(i=0;i<rowNumber ;i++){if($i == ""){sed -i '$d' ${myDatabasePath}/$tableName}}};print $0}' ${myDatabasePath}/$tableName >> ${myDatabasePath}/"${tableName}.new";
                                                 mv ${myDatabasePath}/"${tableName}.new" ${myDatabasePath}/$tableName;
                                                 while true
                                                 do
@@ -267,10 +267,10 @@ do
                 ls --color ${DBs_path}
                 echo "*****************************"
                 echo -e "\n"
-                echo "Enter new dataBase name "
-                read databaseName
                 while true
                 do
+                    echo "Enter new dataBase name "
+                    read databaseName
                     source checkSyntax.sh ${databaseName}
                     if [ $? -eq 1 ]
                     then
