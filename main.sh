@@ -200,7 +200,7 @@ do
                                                     do
                                                         case $REPLY in
                                                             1) echo "insert"
-                                                                if [ $(($rowNum)) -eq 2 ]
+                                                                if [ $(($rowNum)) -gt 1 ]
                                                                 then
                                                                     source insertIntoTable.sh ${tableName}
                                                                 else
@@ -209,7 +209,7 @@ do
                                                                 break
                                                             ;;
                                                             2) echo "update"
-                                                                if [ $(($rowNum)) -eq 2 ]
+                                                                if [ $(($rowNum)) -gt 1 ]
                                                                 then
                                                                     source updateIntoTable.sh ${tableName}
                                                                 else
@@ -218,7 +218,7 @@ do
                                                                 break
                                                             ;;
                                                             3) echo "delete"
-                                                                if [ $(($rowNum)) -eq 2 ]
+                                                                if [ $(($rowNum)) -gt 1 ]
                                                                 then
                                                                     source deleteRowFromTable.sh ${tableName}
                                                                 else
@@ -235,7 +235,7 @@ do
                                                                 break
                                                             ;;
                                                             6) echo "delete column from table"
-                                                                if [ $(($rowNum)) -eq 2 ]
+                                                                if [ $(($rowNum)) -gt 1 ]
                                                                 then
                                                                     source dropColumn.sh ${tableName}
                                                                 else
@@ -244,7 +244,7 @@ do
                                                                 break
                                                             ;;
                                                             7) echo "show record from table"
-                                                                if [ $(($rowNum)) -eq 2 ]
+                                                                if [ $(($rowNum)) -gt 1 ]
                                                                 then
                                                                     source showRecord.sh ${tableName}
                                                                 else
@@ -253,7 +253,7 @@ do
                                                                 break
                                                             ;;
                                                             8) echo "show feild from table"
-                                                                if [ $(($rowNum)) -eq 2 ]
+                                                                if [ $(($rowNum)) -gt 1 ]
                                                                 then
                                                                     source showFeild.sh ${tableName}
                                                                 else
